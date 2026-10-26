@@ -1,0 +1,35 @@
+# The smallest possible workflow.
+# Open the "Actions" tab on GitHub, pick "01 Hello World" and press "Run workflow".
+
+name: 01 Hello World
+
+# "on" = WHEN does this workflow run?
+on:
+  workflow_dispatch:   # a "Run workflow" button in the Actions tab
+    inputs:
+      name:
+        description: "Who should we greet?"
+        default: "QA tester"
+
+# "jobs" = WHAT runs. One job = one fresh virtual machine.
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest   # the machine GitHub gives us (Linux)
+
+    # "steps" run one after another, top to bottom.
+    steps:
+      - name: Say hello
+        run: echo "Hello, ${{ github.event.inputs.name }}!"
+
+      - name: Show some info about this run
+        run: |
+          echo "Repository:  ${{ github.repository }}"
+          echo "Started by:  ${{ github.actor }}"
+          echo "Branch:      ${{ github.ref_name }}"
+          echo "Machine OS:  $(uname -a)"
+
+      - name: Download the repository files onto the machine
+        uses: actions/checkout@v4   # "uses" = a ready-made action written by someone else
+
+      - name: List the files we got
+        run: ls -la

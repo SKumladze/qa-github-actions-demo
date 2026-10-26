@@ -1,0 +1,133 @@
+{
+  "info": {
+    "name": "JSONPlaceholder API tests",
+    "description": "Simple API tests against https://jsonplaceholder.typicode.com, a free fake REST API for practice.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get a single user",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Response time is below 2 seconds', function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "const user = pm.response.json();",
+              "",
+              "pm.test('User has id 1', function () {",
+              "    pm.expect(user.id).to.eql(1);",
+              "});",
+              "",
+              "pm.test('User has a name and a valid looking email', function () {",
+              "    pm.expect(user.name).to.be.a('string').and.not.empty;",
+              "    pm.expect(user.email).to.include('@');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/users/1"
+      }
+    },
+    {
+      "name": "Get posts of user 1",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const posts = pm.response.json();",
+              "",
+              "pm.test('Returns a list of 10 posts', function () {",
+              "    pm.expect(posts).to.be.an('array').with.lengthOf(10);",
+              "});",
+              "",
+              "pm.test('Every post belongs to user 1', function () {",
+              "    posts.forEach(function (post) {",
+              "        pm.expect(post.userId).to.eql(1);",
+              "    });",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/posts?userId=1"
+      }
+    },
+    {
+      "name": "Create a post",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "const body = pm.response.json();",
+              "",
+              "pm.test('New post gets an id', function () {",
+              "    pm.expect(body.id).to.be.a('number');",
+              "});",
+              "",
+              "pm.test('Title we sent comes back', function () {",
+              "    pm.expect(body.title).to.eql('Hello from GitHub Actions');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Hello from GitHub Actions\",\n  \"body\": \"QA practice\",\n  \"userId\": 1\n}"
+        },
+        "url": "{{baseUrl}}/posts"
+      }
+    },
+    {
+      "name": "Post that does not exist returns 404",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 404 Not Found', function () {",
+              "    pm.response.to.have.status(404);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/posts/99999"
+      }
+    }
+  ]
+}

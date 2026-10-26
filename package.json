@@ -1,0 +1,12 @@
+{
+  "name": "qa-github-actions-demo",
+  "private": true,
+  "scripts": {
+    "test:api": "newman run postman/jsonplaceholder.postman_collection.json -e postman/test.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/api-report.html",
+    "test:fail": "newman run postman/failing-on-purpose.postman_collection.json -e postman/test.postman_environment.json -r cli,htmlextra --reporter-htmlextra-export reports/failing-report.html"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}

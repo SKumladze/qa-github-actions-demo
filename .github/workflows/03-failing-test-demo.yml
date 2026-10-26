@@ -1,0 +1,31 @@
+# This one fails ON PURPOSE so you can practise reading a red run.
+# Run it from the Actions tab, open the log, find the failed assertion,
+# then download the report. Fix: edit postman/failing-on-purpose.postman_collection.json
+
+name: 03 Failing Test Demo
+
+on:
+  workflow_dispatch:
+
+jobs:
+  failing-api-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install
+
+      - name: Run a collection that has a wrong expectation
+        run: npm run test:fail
+
+      - name: Save the HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failing-test-report
+          path: reports/failing-report.html

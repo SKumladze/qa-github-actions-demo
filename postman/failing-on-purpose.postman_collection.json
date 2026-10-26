@@ -1,0 +1,35 @@
+{
+  "info": {
+    "name": "Failing on purpose",
+    "description": "This collection has one wrong expectation so you can see what a failed run looks like in GitHub Actions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get a single user (wrong expectation)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status code is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// BUG IN THE TEST: user 1 is really called 'Leanne Graham'.",
+              "// Change the expected name below to make this test pass.",
+              "pm.test('User name is John Smith', function () {",
+              "    pm.expect(pm.response.json().name).to.eql('John Smith');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/users/1"
+      }
+    }
+  ]
+}
